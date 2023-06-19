@@ -94,6 +94,7 @@ const articleTickers = async (id: number): Promise<Symbol[]> => {
     }
 }
 
+
 export {
     allArticles,
     articlesByTicker,

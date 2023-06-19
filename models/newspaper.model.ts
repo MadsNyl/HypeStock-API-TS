@@ -2,7 +2,10 @@ import connection from "../connection";
 import Newspaper from "../types/newspaper";
 import { 
     all,
-    get 
+    create,
+    get, 
+    remove,
+    update
 } from "../queries/newspaper.query";
 
 
@@ -26,8 +29,39 @@ const newspaper = async (provider: string): Promise<Newspaper[]> => {
     }
 }
 
+const createNewspaper = async (provider: string, startUrl: string, baseUrl: string, fullName: string) => {
+   try {
+        await connection.query(create, [provider, startUrl, baseUrl, fullName]);
+   } catch (e) {
+        console.error("Error creating newspaper:", e);
+   } 
+}
+
+const deleteNewspaper = async (provider: string) => {
+    try {
+        await connection.query(remove, [provider]);
+    } catch (e) {
+        console.error("Error deleting newspaper:", e);
+    }
+}
+
+const updateNewspaper = async (
+    provider: string,
+    startUrl: string,
+    baseUrl: string,
+    fullName: string
+) => {
+    try {
+        await connection.query(update, [provider, startUrl, baseUrl, fullName, provider]);
+    } catch (e) {
+        console.error("Error updating newspaper:", e);
+    }
+}
 
 export {
     allNewspapers,
-    newspaper
+    newspaper,
+    createNewspaper,
+    deleteNewspaper,
+    updateNewspaper
 }
