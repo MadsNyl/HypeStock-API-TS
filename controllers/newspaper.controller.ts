@@ -1,5 +1,5 @@
-import { Request, Response } from "express"
-import { allNewspapers, newspaper} from "../models/newspaper.model"
+import { Request, Response } from "express";
+import { allNewspapers, newspaper} from "../models/newspaper.model";
 import { articleTickers, articlesByProvider } from "../models/article.model";
 
 
