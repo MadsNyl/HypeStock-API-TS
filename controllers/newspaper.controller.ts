@@ -62,18 +62,18 @@ const addNewspaper = async (req: Request, res: Response) => {
         !full_name
     ) 
         return res
-            .send("There are missing information.")
-            .status(400);
+            .status(400)
+            .send("There are missing information.");
 
     try {
         await createNewspaper(provider, start_url, base_url, full_name);
 
         return res
-            .send("Newspaper created.")
-            .status(201);
+            .status(201)
+            .send("Newspaper created.");
     } catch (e) {
         console.log(e);
-        return res.send("There occured an error.").status(500);
+        return res.status(500).send("There occured an error.");
     }
 
 
@@ -81,7 +81,7 @@ const addNewspaper = async (req: Request, res: Response) => {
 
 const removeNewspaper = async (req: Request, res: Response) => {
 
-    const { provider } = req.query;
+    const { provider } = req.params;
 
     if (!provider) {
         return res
@@ -113,16 +113,16 @@ const editNewspaper = async (req: Request, res: Response) => {
         !full_name
     ) {
         return res
-            .send("There are missing information.")
-            .status(400);
+            .status(400)
+            .send("There are missing information.");
     }
 
     try {
+        console.log(provider)
         await updateNewspaper(provider, start_url, base_url, full_name);
-
         return res
-            .send("Newspaper updated.")
-            .status(204);
+            .status(204)
+            .send("Newspaper updated.");
     } catch (e) {
         console.log(e);
         return res.send("There occured an error.").status(500);

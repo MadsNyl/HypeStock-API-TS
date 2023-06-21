@@ -16,8 +16,8 @@ export const handleLogin = async (req: Request, res: Response) => {
 
     if (!username || !password) {
         return res
-            .send("Username and password are required.")
-            .status(400);
+            .status(400)
+            .send("Username and password are required.");
     }
 
     if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
@@ -78,7 +78,8 @@ export const handleLogin = async (req: Request, res: Response) => {
 
         return res
             .send({
-                "accessToken": accessToken
+                "accessToken": accessToken,
+                "role": existingRole
             })
             .status(200);
         
@@ -223,7 +224,9 @@ export const handleRefreshToken = async (req: Request, res: Response) => {
 
                 return res
                     .send({
-                        "accessToken": accessToken 
+                        "username": existingUsername,
+                        "accessToken": accessToken,
+                        "role": existingRole
                     })
                     .status(200);
             }

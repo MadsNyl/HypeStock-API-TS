@@ -5,18 +5,12 @@ import { UserRequest } from "../types/request";
 
 
 const verifyJWT = (req: UserRequest, res: Response, next: NextFunction) => {
-    if (!req.username || !req.role) {
-        return res
-            .send("Request need both username and role.")
-            .status(401);
-    }
-
     const authHeader = req.headers.authorization;
 
     if (!authHeader?.startsWith("Bearer ")) {
         return res
-            .send("The auth header need to start with Bearer.")
-            .status(401);
+            .status(401)
+            .send("The auth header need to start with Bearer.");
     }
 
     const token = authHeader.split(" ")[1];
@@ -31,8 +25,8 @@ const verifyJWT = (req: UserRequest, res: Response, next: NextFunction) => {
         (err: jsonwebtoken.VerifyErrors | null, decoded: any) => {
             if (err) {
                 return res
-                    .send("You do not have access to this endpoint.")
-                    .status(403);
+                    .status(403)
+                    .send("You do not have access to this endpoint.");
             }
 
             req.username = decoded.UserInfo.username;

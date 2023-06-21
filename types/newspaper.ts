@@ -5,6 +5,7 @@ type Newspaper =  {
     start_url: string;
     base_url: string;
     full_name: string;
+    article_count?: number;
     articles?: Article[];
 }
 

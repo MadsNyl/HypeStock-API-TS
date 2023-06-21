@@ -1,8 +1,11 @@
 
 
 export const all = `
-    SELECT *
-    FROM newspaper;
+    SELECT newspaper.*, COUNT(article.id) as article_count
+    FROM newspaper
+    LEFT JOIN article 
+    ON newspaper.provider = article.provider
+    GROUP BY newspaper.provider;
 `;
 
 export const get = `
