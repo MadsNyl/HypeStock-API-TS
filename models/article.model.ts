@@ -2,6 +2,7 @@ import connection from "../connection";
 import Article, { ArticleCount } from "../types/article";
 import Count from "../types/count";
 import Symbol from "../types/symbol";
+import CountDate from "../types/countDate";
 import { 
     all,
     byTicker,
@@ -14,7 +15,8 @@ import {
     countByTickers,
     count,
     countLastDay,
-    countByDays
+    countByDays,
+    countEachHour
 } from "../queries/article.query";
 
 
@@ -124,6 +126,16 @@ export const articlesCountByDays = async (days: number): Promise<Count[]> => {
         return rows as Count[];
     } catch (e) {
         console.error("Error retrieving article count by days:", e);
+        return [];
+    }
+}
+
+export const articlesCountEachHour = async (): Promise<CountDate[]> => {
+    try {
+        const [rows] = await connection.query(countEachHour);
+        return rows as CountDate[];
+    } catch (e) {
+        console.error("Error retrieving article count for each hour:", e);
         return [];
     }
 }

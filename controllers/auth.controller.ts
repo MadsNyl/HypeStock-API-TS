@@ -5,7 +5,8 @@ import {
     findUserByUsername,
     updateUserRefreshToken,
     createUser,
-    findUserByRefreshToken
+    findUserByRefreshToken,
+    updateUser
 } from "../models/user.model";
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../settings";
 import Role from "../enums/role";
@@ -30,8 +31,8 @@ export const handleLogin = async (req: Request, res: Response) => {
         
         if (!existingUsers.length) {
             return res
-                .send("No existing user.")
-                .status(401);
+                .status(401)
+                .send("No existing user.");
         }
 
         const existingUsername = existingUsers[0].username;
@@ -42,8 +43,8 @@ export const handleLogin = async (req: Request, res: Response) => {
         
         if (!userMatch) {
             return res
-                .send("There was not a match for this user.")
-                .status(401);
+                .status(401)
+                .send("Username or password is wrong.");
         }
 
         const accessToken = jsonwebtoken.sign(
@@ -77,11 +78,11 @@ export const handleLogin = async (req: Request, res: Response) => {
         );
 
         return res
+            .status(200)
             .send({
                 "accessToken": accessToken,
                 "role": existingRole
-            })
-            .status(200);
+            });
         
     } catch (e) {
         console.log(e);
@@ -128,6 +129,94 @@ export const handleNewUser = async (req: Request, res: Response) => {
         return res.send("There occured an error.").status(500);
     }
 
+}
+
+export const handleNewEditor = async (req: Request, res: Response) => {
+    const { username, password, rePassword } = req.body;
+
+    if (!username || !password || !rePassword) {
+        return res
+            .status(400)
+            .send("Username, password and repeated password are required.");
+    }
+
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username.toString());
+
+    if (!isEmail) {
+        return res
+            .status(400)
+            .send("The username has to be an email.");
+    }
+
+    if (password !== rePassword) {
+        return res
+            .status(400)
+            .send("The password and the repeated password must be the same.");
+    }
+
+    try {
+        const duplicateUsers = await findUserByUsername(username);
+
+        if (duplicateUsers.length) {
+            return res
+                .status(409)
+                .send("There already exists a user with this username.");
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        await createUser(username, hashedPassword, Role.Editor);
+
+        return res
+            .status(201)
+            .send("New editor created.");
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send("There occured an error.");
+    }
+}
+
+export const editUser = async (req: Request, res: Response) => {
+    const { username, password, oldPassword } = req.body;
+
+    if (!username || !password || !oldPassword) {
+        return res
+            .status(400)
+            .send("There have to be a username, password and old password.");
+    }
+
+    try {
+        const existingUsers = await findUserByUsername(username);
+        
+        if (!existingUsers.length) {
+            return res
+                .send("No existing user.")
+                .status(401);
+        }
+
+        const existingPassword = existingUsers[0].password;
+
+        const userMatch = await bcrypt.compare(oldPassword, existingPassword);
+        
+        if (!userMatch) {
+            return res
+                .send("Wrong password.")
+                .status(401);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await updateUser(username, hashedPassword);
+
+        return res
+            .status(204)
+            .send("User updated.");
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send("There occured an error.");
+    }
 }
 
 export const handleLogout = async (req: Request, res: Response) => {

@@ -6,6 +6,12 @@ export const find = `
     WHERE username = ?;
 `;
 
+export const allByRole = `
+    SELECT *
+    FROM users
+    WHERE role = ?;
+`;
+
 export const findByRefreshToken = `
     SELECT *
     FROM users
@@ -22,4 +28,11 @@ export const create = `
     INSERT INTO users
     (username, password, role)
     VALUES (?, ?, ?);
+`;
+
+export const update = `
+    UPDATE users
+    SET
+        password = ?
+    WHERE username = ?;
 `;

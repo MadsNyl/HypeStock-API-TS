@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { articlesCountByDays, articlesCountLastDay, totalArticlesCount } from "../models/article.model";
+import { articlesCountByDays, articlesCountEachHour, articlesCountLastDay, totalArticlesCount } from "../models/article.model";
 import { articleWordsCount } from "../models/articleWords.model";
 
 
@@ -19,6 +19,7 @@ export const getArticleBaseData = async (req: Request, res: Response) => {
         const articleCountLastDay = await articlesCountLastDay();
         const articleCountByDays = await articlesCountByDays(Number(days));
         const totalArticleWordsCount = await articleWordsCount();
+        const articleCountEachHour = await articlesCountEachHour();
         
         return res
             .status(200)
@@ -26,7 +27,8 @@ export const getArticleBaseData = async (req: Request, res: Response) => {
                 "total_article_count": totalArticleCount,
                 "article_count_last_day": articleCountLastDay,
                 "article_count_by_days": articleCountByDays,
-                "total_article_words_count": totalArticleWordsCount
+                "total_article_words_count": totalArticleWordsCount,
+                "article_count_each_hour": articleCountEachHour
             });
 
     } catch (e) {

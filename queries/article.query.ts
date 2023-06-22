@@ -91,3 +91,11 @@ export const countByDays = `
     FROM article
     WHERE created_date >= DATE(NOW() - INTERVAL ? DAY);
 `;
+
+export const countEachHour = `
+    SELECT DATE_FORMAT(created_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(*) AS count
+    FROM article
+    WHERE created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+    GROUP BY hour
+    ORDER BY hour;
+`;

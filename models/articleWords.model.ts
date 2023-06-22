@@ -33,9 +33,9 @@ export const createArticleWord = async (word: string, description: string) => {
     }
 }
 
-export const updateArticleWord = async (id: number, word: string, description: string) => {
+export const updateArticleWord = async (id: number, description: string) => {
     try {
-        await connection.query(update, [id, word, description]);
+        await connection.query(update, [description, id]);
     } catch (e) {
         console.error("Error updating article word:", e);
     }

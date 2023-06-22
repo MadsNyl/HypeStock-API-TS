@@ -27,7 +27,6 @@ export const create = `
 export const update = `
     UPDATE article_word
     SET
-        word = ?,
         description = ?
     WHERE id = ?;
 `;

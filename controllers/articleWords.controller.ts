@@ -95,16 +95,16 @@ export const addArticleWord = async (req: Request, res: Response) => {
 
 export const editArticleWord = async (req: Request, res: Response) => {
 
-    const { id, word, description } = req.query;
+    const { id, description } = req.body;
 
-    if (!id || !word || !description) {
+    if (!id || !description) {
         return res
             .status(400)
-            .send("There need to be both a word and a description.");
+            .send("There need to be both an id and a description.");
     }
 
     try {
-        await updateArticleWord(Number(id), word.toString(), description.toString());
+        await updateArticleWord(Number(id), description.toString());
 
         return res
             .status(204)

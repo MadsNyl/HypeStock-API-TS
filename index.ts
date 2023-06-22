@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.route";
 import articleWordsRouter from "./routes/articleWords.route";
 import credentials from "./middleware/credentials";
 import articleRouter from "./routes/article.route";
+import userRouter from "./routes/user.route";
 
 const app = express();
 const port = 8800;
@@ -23,6 +24,7 @@ app.use("/api/v1/newspaper/", newspaperRouter);
 app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/homograph/", articleWordsRouter);
 app.use("/api/v1/article/", articleRouter);
+app.use("/api/v1/user/", userRouter);
 
 
 app.listen(port, () => {
