@@ -94,8 +94,16 @@ export const handleNewUser = async (req: Request, res: Response) => {
 
     if (!username || !password) {
         return res
-            .send("Username and password are required.")
-            .status(400);
+            .status(400)
+            .send("Username and password are required.");
+    }
+
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username.toString());
+
+    if (!isEmail) {
+        return res
+            .status(400)
+            .send("The username has to be an email.");
     }
 
     try {

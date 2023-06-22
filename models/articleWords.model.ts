@@ -1,8 +1,9 @@
 import connection from "../connection";
 import ArticleWord from "../types/articleWord";
 import {
-    all, create, remove, update
+    all, count, create, get, remove, update
 } from "../queries/articleWords.query";
+import Count from "../types/count";
 
 export const allArticleWords = async (): Promise<ArticleWord[]> => {
     try {
@@ -10,6 +11,16 @@ export const allArticleWords = async (): Promise<ArticleWord[]> => {
         return rows as ArticleWord[];
     } catch (e) {
         console.error("Error retrieving all article words:", e);
+        return [];
+    }
+}
+
+export const articleWordById = async (id: number): Promise<ArticleWord[]> => {
+    try {
+        const [rows] = await connection.query(get, [id]);
+        return rows as ArticleWord[];
+    } catch (e) {
+        console.error("Error retrieving article word by id:", e);
         return [];
     }
 }
@@ -35,5 +46,15 @@ export const deleteArticleWord = async (id: number) => {
         await connection.query(remove, [id]);
     } catch (e) {
         console.error("Error deleting article word:", e);
+    }
+}
+
+export const articleWordsCount = async (): Promise<Count[]> => {
+    try {
+        const [rows] = await connection.query(count);
+        return rows as Count[];
+    } catch (e) {
+        console.error("Error retrieving article words count:", e);
+        return [];
     }
 }

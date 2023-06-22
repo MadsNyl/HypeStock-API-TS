@@ -74,3 +74,20 @@ export const tickers = `
     FROM article_ticker
     WHERE article_id = ?;
 `;
+
+export const count = `
+    SELECT COUNT(*) AS count
+    FROM article;
+`;
+
+export const countLastDay = `
+    SELECT COUNT(*) AS count
+    FROM article
+    WHERE created_date >= DATE(NOW() - INTERVAL 24 HOUR);
+`;
+
+export const countByDays = `
+    SELECT COUNT(*) AS count
+    FROM article
+    WHERE created_date >= DATE(NOW() - INTERVAL ? DAY);
+`;

@@ -3,7 +3,7 @@ import { allNewspapers, createNewspaper, deleteNewspaper, newspaper, updateNewsp
 import { articleTickers, articlesByProvider } from "../models/article.model";
 
 
-const getAllNewspapers = async (_req: Request, res: Response) => {
+export const getAllNewspapers = async (_req: Request, res: Response) => {
     try {
         const newspapers = await allNewspapers();
 
@@ -18,7 +18,7 @@ const getAllNewspapers = async (_req: Request, res: Response) => {
     }
 }
 
-const getNewspaper = async (req: Request, res: Response) => {
+export const getNewspaper = async (req: Request, res: Response) => {
 
     const { provider, limit } = req.query;
 
@@ -51,7 +51,7 @@ const getNewspaper = async (req: Request, res: Response) => {
     }
 }
 
-const addNewspaper = async (req: Request, res: Response) => {
+export const addNewspaper = async (req: Request, res: Response) => {
 
     const { provider, start_url, base_url, full_name } = req.body;
 
@@ -79,7 +79,7 @@ const addNewspaper = async (req: Request, res: Response) => {
 
 }
 
-const removeNewspaper = async (req: Request, res: Response) => {
+export const removeNewspaper = async (req: Request, res: Response) => {
 
     const { provider } = req.params;
 
@@ -93,16 +93,16 @@ const removeNewspaper = async (req: Request, res: Response) => {
         await deleteNewspaper(provider.toString());
 
         return res  
-            .send("Provider deleted.")
-            .status(204);
+            .status(204)
+            .send("Provider deleted.");
     } catch (e) {
         console.log(e);
-        return res.send("There occured an error.").status(500);
+        return res.status(500).send("There occured an error.");
     }
 
 }
 
-const editNewspaper = async (req: Request, res: Response) => {
+export const editNewspaper = async (req: Request, res: Response) => {
 
     const { provider, start_url, base_url, full_name } = req.body;
 
@@ -118,23 +118,13 @@ const editNewspaper = async (req: Request, res: Response) => {
     }
 
     try {
-        console.log(provider)
         await updateNewspaper(provider, start_url, base_url, full_name);
         return res
             .status(204)
             .send("Newspaper updated.");
     } catch (e) {
         console.log(e);
-        return res.send("There occured an error.").status(500);
+        return res.status(500).send("There occured an error.");
     }
 
-}
-
-
-export {
-    getAllNewspapers,
-    getNewspaper,
-    addNewspaper,
-    removeNewspaper,
-    editNewspaper
 }

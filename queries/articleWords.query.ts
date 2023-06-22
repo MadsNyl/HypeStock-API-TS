@@ -5,6 +5,12 @@ export const all = `
     FROM article_word;
 `;
 
+export const get = `
+    SELECT *
+    FROM article_word
+    WHERE id = ?;
+`;
+
 export const remove = `
     DELETE
     FROM article_word
@@ -24,4 +30,9 @@ export const update = `
         word = ?,
         description = ?
     WHERE id = ?;
+`;
+
+export const count = `
+    SELECT COUNT(*) as count
+    FROM article_word;
 `;

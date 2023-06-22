@@ -1,5 +1,6 @@
 import connection from "../connection";
 import Article, { ArticleCount } from "../types/article";
+import Count from "../types/count";
 import Symbol from "../types/symbol";
 import { 
     all,
@@ -10,11 +11,14 @@ import {
     countByTickerAndDays,
     get,
     tickers,
-    countByTickers
+    countByTickers,
+    count,
+    countLastDay,
+    countByDays
 } from "../queries/article.query";
 
 
-const allArticles = async (): Promise<Article[]> => {
+export const allArticles = async (): Promise<Article[]> => {
     try {
         const [rows] = await connection.query(all);
         return rows as Article[];
@@ -24,7 +28,7 @@ const allArticles = async (): Promise<Article[]> => {
     }
 }
 
-const articlesByTicker = async (symbol: string, limit: number): Promise<Article[]> => {
+export const articlesByTicker = async (symbol: string, limit: number): Promise<Article[]> => {
     try {
         const [rows] = await connection.query(byTicker, [symbol, limit]);
         return rows as Article[];
@@ -34,7 +38,7 @@ const articlesByTicker = async (symbol: string, limit: number): Promise<Article[
     }
 }
 
-const articlesByTickerAndDays = async (symbol: string, days: number, limit: number): Promise<Article[]> => {
+export const articlesByTickerAndDays = async (symbol: string, days: number, limit: number): Promise<Article[]> => {
     try {
         const [rows] = await connection.query(byTickerAndDays, [symbol, days, limit]);
         return rows as Article[];
@@ -44,7 +48,7 @@ const articlesByTickerAndDays = async (symbol: string, days: number, limit: numb
     }
 }
 
-const articlesByProvider = async (provider: string, limit: number): Promise<Article[]> => {
+export const articlesByProvider = async (provider: string, limit: number): Promise<Article[]> => {
     try {
         const [rows] = await connection.query(byProvider, [provider, limit]);
         return rows as Article[];
@@ -54,7 +58,7 @@ const articlesByProvider = async (provider: string, limit: number): Promise<Arti
     }
 }
 
-const articlesCountByTickerAndDays = async (symbol: string, days: number): Promise<ArticleCount[]> => {
+export const articlesCountByTickerAndDays = async (symbol: string, days: number): Promise<ArticleCount[]> => {
     try {
         const [rows] = await connection.query(countByTickerAndDays, [symbol, days]);
         return rows as ArticleCount[];
@@ -64,7 +68,7 @@ const articlesCountByTickerAndDays = async (symbol: string, days: number): Promi
     }
 }
 
-const articlesCountByProvidersAndDays = async (symbol: string, days: Number): Promise<ArticleCount[]> => {
+export const articlesCountByProvidersAndDays = async (symbol: string, days: Number): Promise<ArticleCount[]> => {
     try {
         const [rows] = await connection.query(countByProvidersAndDays, [symbol, days]);
         return rows as ArticleCount[];
@@ -74,7 +78,7 @@ const articlesCountByProvidersAndDays = async (symbol: string, days: Number): Pr
     }
 }
 
-const article = async (id: number): Promise<Article[]> => {
+export const article = async (id: number): Promise<Article[]> => {
     try {
         const [rows] = await connection.query(get, [id]);
         return rows as Article[];
@@ -84,7 +88,7 @@ const article = async (id: number): Promise<Article[]> => {
     }
 }
 
-const articleTickers = async (id: number): Promise<Symbol[]> => {
+export const articleTickers = async (id: number): Promise<Symbol[]> => {
     try {   
         const [rows] = await connection.query(tickers, [id]);
         return rows as Symbol[];
@@ -94,14 +98,32 @@ const articleTickers = async (id: number): Promise<Symbol[]> => {
     }
 }
 
+export const totalArticlesCount = async (): Promise<Count[]> => {
+    try {
+        const [rows] = await connection.query(count);
+        return rows as Count[];
+    } catch (e) {
+        console.error("Error retrieving total article count:", e);
+        return [];
+    }
+}
 
-export {
-    allArticles,
-    articlesByTicker,
-    articlesByProvider,
-    article,
-    articleTickers,
-    articlesCountByProvidersAndDays,
-    articlesByTickerAndDays,
-    articlesCountByTickerAndDays
+export const articlesCountLastDay = async (): Promise<Count[]> => {
+    try {
+        const [rows] = await connection.query(countLastDay);
+        return rows as Count[];
+    } catch (e) {
+        console.error("Error retrieving article count last 24 hours:", e);
+        return [];
+    }
+}
+
+export const articlesCountByDays = async (days: number): Promise<Count[]> => {
+    try {
+        const [rows] = await connection.query(countByDays, [days]);
+        return rows as Count[];
+    } catch (e) {
+        console.error("Error retrieving article count by days:", e);
+        return [];
+    }
 }
