@@ -36,3 +36,10 @@ export const update = `
         password = ?
     WHERE username = ?;
 `;
+
+export const updateRole = `
+    UPDATE users
+    SET
+        role = ?
+    WHERE username = ?;
+`;

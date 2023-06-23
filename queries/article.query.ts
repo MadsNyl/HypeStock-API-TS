@@ -93,9 +93,26 @@ export const countByDays = `
 `;
 
 export const countEachHour = `
-    SELECT DATE_FORMAT(created_date, '%Y-%m-%d %H:00:00') AS hour, COUNT(*) AS count
+    SELECT DATE_FORMAT(created_date, '%H') AS date, COUNT(*) AS count
     FROM article
     WHERE created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
-    GROUP BY hour
-    ORDER BY hour;
+    GROUP BY date
+    ORDER BY date;
+`;
+
+export const countEachHourByProvider = `
+    SELECT DATE_FORMAT(created_date, '%H') AS date, COUNT(*) AS count
+    FROM article
+    WHERE created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+    AND provider = ?
+    GROUP BY date
+    ORDER BY date;
+`;
+
+export const countEachDay = `
+    SELECT DATE_FORMAT(created_date, '%d-%m') AS date, COUNT(*) AS count
+    FROM article
+    WHERE created_date >= CURDATE() - INTERVAL ? DAY
+    GROUP BY date
+    ORDER BY date;
 `;

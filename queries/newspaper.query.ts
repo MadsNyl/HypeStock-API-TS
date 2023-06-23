@@ -1,7 +1,7 @@
 
 
 export const all = `
-    SELECT newspaper.*, COUNT(article.id) as article_count
+    SELECT newspaper.*, COUNT(article.id) AS article_count
     FROM newspaper
     LEFT JOIN article 
     ON newspaper.provider = article.provider
@@ -9,9 +9,11 @@ export const all = `
 `;
 
 export const get = `
-    SELECT *
+    SELECT newspaper.*, COUNT(article.id) AS article_count
     FROM newspaper
-    WHERE provider = ?;
+    LEFT JOIN article 
+    ON newspaper.provider = article.provider
+    WHERE newspaper.provider = ?;
 `;
 
 export const create = `

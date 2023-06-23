@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { allNewspapers, createNewspaper, deleteNewspaper, newspaper, updateNewspaper} from "../models/newspaper.model";
-import { articleTickers, articlesByProvider } from "../models/article.model";
+import { articleTickers, articlesByProvider, articlesCountEachHourByProvider } from "../models/article.model";
 
 
 export const getAllNewspapers = async (_req: Request, res: Response) => {
@@ -19,6 +19,38 @@ export const getAllNewspapers = async (_req: Request, res: Response) => {
 }
 
 export const getNewspaper = async (req: Request, res: Response) => {
+    const { provider } = req.params;
+
+    if (!provider) {
+        return res
+            .status(400)
+            .send("There has to be a provider");
+    }
+
+    try {
+        const result = await newspaper(provider.toString());
+        const articleCountEachHour = await articlesCountEachHourByProvider(provider.toString());
+
+        if (!result.length) {
+            return res
+                .status(404)
+                .send("There is no newspaper with this provider name.");
+        }
+
+        return res
+            .status(200)
+            .send({
+                "newspaper": result[0],
+                "article_count_each_hour": articleCountEachHour 
+            });
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send("There occured an error.");
+    }
+}
+
+export const getNewspaperAndArticles = async (req: Request, res: Response) => {
 
     const { provider, limit } = req.query;
 

@@ -1,6 +1,6 @@
 type CountDate = {
     count: number;
-    hour: Date;
+    date: Date;
 }
 
 export default CountDate;

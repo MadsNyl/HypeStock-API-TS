@@ -16,7 +16,9 @@ import {
     count,
     countLastDay,
     countByDays,
-    countEachHour
+    countEachHour,
+    countEachDay,
+    countEachHourByProvider
 } from "../queries/article.query";
 
 
@@ -136,6 +138,26 @@ export const articlesCountEachHour = async (): Promise<CountDate[]> => {
         return rows as CountDate[];
     } catch (e) {
         console.error("Error retrieving article count for each hour:", e);
+        return [];
+    }
+}
+
+export const articlesCountEachHourByProvider = async (provider: string): Promise<CountDate[]> => {
+    try {
+        const [rows] = await connection.query(countEachHourByProvider, [provider]);
+        return rows as CountDate[];
+    } catch (e) {
+        console.error("Error retrieving article count for each hour:", e);
+        return [];
+    }
+}
+
+export const articlesCountEachDay =async (days: number): Promise<CountDate[]> => {
+    try {
+        const [rows] = await connection.query(countEachDay, [days]);
+        return rows as CountDate[];
+    } catch (e) {
+        console.error("Error retrieving article count for each day:", e);
         return [];
     }
 }
