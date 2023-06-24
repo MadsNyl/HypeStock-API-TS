@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { allTickers, tickerBySymbol, tickersByName, tickersBySearch } from "../models/ticker.model";
+import { allTickers, tickerBySymbol, tickerBySymbolSearch, tickersByName, tickersBySearch } from "../models/ticker.model";
 import { trackingsByTickerAndDays } from "../models/tracking.model";
 import { articlesByTickerAndDays, articlesCountByProvidersAndDays, articlesCountByTickerAndDays } from "../models/article.model";
 
@@ -105,6 +105,29 @@ const getTickersBySearch = async (req: Request, res: Response) => {
 
     try {
         const results = await tickersBySearch(search.toString(), Number(limit));
+
+        return res
+            .send({
+                "tickers": results
+            })
+            .status(200);
+    } catch (e) {
+        console.log(e);
+        return res.send("There occured an error.").status(500);
+    }
+}
+
+export const getTickersBySymbolSearch = async (req: Request, res: Response) => {
+    const { search, limit } = req.query;
+
+    if (!search || !limit) {
+        return res  
+            .send("There have to be a search for a ticker name or symbol and a limit.")
+            .status(400);
+    }
+
+    try {
+        const results = await tickerBySymbolSearch(search.toString(), Number(limit));
 
         return res
             .send({

@@ -11,6 +11,13 @@ export const bySymbol = `
     WHERE symbol = ?;
 `;
 
+export const bySymbolSearch = `
+    SELECT *
+    FROM ticker
+    WHERE symbol LIKE ?
+    LIMIT ?;
+`;
+
 export const byName = `
     SELECT *
     FROM ticker

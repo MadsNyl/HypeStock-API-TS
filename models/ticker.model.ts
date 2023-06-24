@@ -4,7 +4,8 @@ import {
     all,
     byName,
     bySearch,
-    bySymbol
+    bySymbol,
+    bySymbolSearch
 } from "../queries/ticker.query";
 
 
@@ -21,6 +22,16 @@ const allTickers = async (): Promise<Ticker[]> => {
 const tickerBySymbol = async (symbol: string): Promise<Ticker[]> => {
     try {
         const [rows] = await connection.query(bySymbol, [symbol]);
+        return rows as Ticker[];
+    } catch (e) {
+        console.error("Error retrieving ticker by symbol:", e);
+        return [];
+    }
+}
+
+export const tickerBySymbolSearch = async (symbol: string, limit: number): Promise<Ticker[]> => {
+    try {
+        const [rows] = await connection.query(bySymbolSearch, [`%${symbol}%`, limit]);
         return rows as Ticker[];
     } catch (e) {
         console.error("Error retrieving ticker by symbol:", e);
