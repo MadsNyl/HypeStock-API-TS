@@ -1,6 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import cookiParser from "cookie-parser";
+import corsOptions from "./corsOptions";
 import tickerRouter from "./routes/ticker.route";
 import newspaperRouter from "./routes/newspaper.route";
 import authRouter from "./routes/auth.route";
@@ -15,9 +16,9 @@ const app = express();
 const port = 8800;
 
 app.use(credentials);
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(fileUpload());
-app.use(cors({ origin: "http://localhost:5173" }));
 app.use(cookiParser());
 
 
