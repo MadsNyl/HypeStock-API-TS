@@ -2,7 +2,9 @@
 
 export const all = `
     SELECT *
-    FROM article_word;
+    FROM article_word
+    LIMIT ?
+    OFFSET ?;
 `;
 
 export const get = `

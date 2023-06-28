@@ -1,4 +1,4 @@
-import { Request, Response, json } from "express";
+import { Request, Response } from "express";
 import { fileDelete, fileUpload, jsonUpdate } from "../util/fileHandler";
 import { UploadedFile } from "express-fileupload";
 import { config, configById, createConfig, removeConfig, updateConfig } from "../models/config.model";

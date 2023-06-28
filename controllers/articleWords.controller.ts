@@ -1,15 +1,49 @@
 import { Request, Response } from "express";
-import { allArticleWords, articleWordById, createArticleWord, deleteArticleWord, updateArticleWord } from "../models/articleWords.model";
+import { allArticleWords, articleWordById, articleWordsCount, createArticleWord, deleteArticleWord, updateArticleWord } from "../models/articleWords.model";
 import { tickerBySymbol } from "../models/ticker.model";
 
 
-export const getAllArticleWords = async (_req: Request, res: Response) => {
+export const getAllArticleWords = async (req: Request, res: Response) => {
+
+    const { limit, page } = req.query;
+
+    if (!limit || !page) {
+        return res
+            .status(400)
+            .send("There has to be a limit and a page number.");
+    }
+
     try {
-        const articleWords = await allArticleWords();
+        const articleWords = await allArticleWords(Number(limit), Number(page) - 1);
+        const totalRows = await articleWordsCount();
+
+        if (!articleWords.length || !totalRows.length) {
+            return res
+                .status(404)
+                .send("There are no homographs.");
+        }
+
+        const totalPages = Math.ceil(Number(totalRows[0].count) / Number(limit));
+        let nextPageUrl: string | null;
+        let prevPageUrl: string | null;
+
+        if (totalPages === Number(page)) {
+            nextPageUrl = null;
+        } else {
+            nextPageUrl = `/homograph?limit=${limit}&page=${Number(page) + 1}`;
+        }
+
+        if (Number(page) <= 1) {
+            prevPageUrl = null;
+        } else {
+            prevPageUrl = `/homograph?limit=${limit}&page=${Number(page) - 1}`;
+        }
 
         return res
             .status(200)
             .send({
+                "next_page": nextPageUrl,
+                "prev_page": prevPageUrl,
                 "homographs": articleWords
             });
     } catch (e) {

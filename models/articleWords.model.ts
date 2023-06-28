@@ -5,9 +5,9 @@ import {
 } from "../queries/articleWords.query";
 import Count from "../types/count";
 
-export const allArticleWords = async (): Promise<ArticleWord[]> => {
+export const allArticleWords = async (limit: number, page: number): Promise<ArticleWord[]> => {
     try {
-        const [rows] = await connection.query(all);
+        const [rows] = await connection.query(all, [limit, limit * page]);
         return rows as ArticleWord[];
     } catch (e) {
         console.error("Error retrieving all article words:", e);

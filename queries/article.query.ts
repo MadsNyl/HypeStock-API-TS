@@ -93,7 +93,7 @@ export const countByDays = `
 `;
 
 export const countEachHour = `
-    SELECT DATE_FORMAT(created_date, '%H') AS date, COUNT(*) AS count
+    SELECT DATE_FORMAT(created_date, '%d-%m %H:00') AS date, COUNT(*) AS count
     FROM article
     WHERE created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
     GROUP BY date
@@ -101,7 +101,7 @@ export const countEachHour = `
 `;
 
 export const countEachHourByProvider = `
-    SELECT DATE_FORMAT(created_date, '%H') AS date, COUNT(*) AS count
+    SELECT DATE_FORMAT(created_date, '%d-%m %H:00') AS date, COUNT(*) AS count
     FROM article
     WHERE created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
     AND provider = ?
