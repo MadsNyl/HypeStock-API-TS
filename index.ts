@@ -12,6 +12,7 @@ import userRouter from "./routes/user.route";
 import configRouter from "./routes/config.route";
 import fileUpload from "express-fileupload";
 import filingRouter from "./routes/filing.route";
+import statementRouter from "./routes/statement.route";
 
 const app = express();
 const port = 8800;
@@ -32,6 +33,7 @@ app.use("/api/v1/article/", articleRouter);
 app.use("/api/v1/user/", userRouter);
 app.use("/api/v1/config/", configRouter);
 app.use("/api/v1/filing/", filingRouter);
+app.use("/api/v1/statement", statementRouter);
 
 
 app.listen(port, () => {

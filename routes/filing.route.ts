@@ -1,11 +1,11 @@
 import express from "express";
-import { getStatement } from "../controllers/filing.controller"; 
+import { getFilings } from "../controllers/filing.controller"; 
 
 const filingRouter = express.Router();
 
 
 filingRouter
-    .get("/", getStatement)
+    .get("/", getFilings)
 
 
 export default filingRouter;
