@@ -33,6 +33,15 @@ export const create = `
 export const update = `
     UPDATE users
     SET
+        username = ?,
+        first_name = ?,
+        last_name = ?
+    WHERE username = ?;
+`;
+
+export const editPassword = `
+    UPDATE users
+    SET
         password = ?
     WHERE username = ?;
 `;

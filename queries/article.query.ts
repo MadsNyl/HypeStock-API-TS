@@ -83,27 +83,27 @@ export const count = `
 export const countLastDay = `
     SELECT COUNT(*) AS count
     FROM article
-    WHERE created_date >= DATE(NOW() - INTERVAL 24 HOUR);
+    WHERE collected_date >= DATE(NOW() - INTERVAL 24 HOUR);
 `;
 
 export const countByDays = `
     SELECT COUNT(*) AS count
     FROM article
-    WHERE created_date >= DATE(NOW() - INTERVAL ? DAY);
+    WHERE collected_date >= DATE(NOW() - INTERVAL ? DAY);
 `;
 
 export const countEachHour = `
     SELECT DATE_FORMAT(created_date, '%d-%m %H:00') AS date, COUNT(*) AS count
     FROM article
-    WHERE created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+    WHERE collected_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
     GROUP BY date
     ORDER BY date;
 `;
 
 export const countEachHourByProvider = `
-    SELECT DATE_FORMAT(created_date, '%d-%m %H:00') AS date, COUNT(*) AS count
+    SELECT DATE_FORMAT(collected_date, '%d-%m %H:00') AS date, COUNT(*) AS count
     FROM article
-    WHERE created_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+    WHERE collected_date >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
     AND provider = ?
     GROUP BY date
     ORDER BY date;
@@ -112,7 +112,7 @@ export const countEachHourByProvider = `
 export const countEachDay = `
     SELECT DATE_FORMAT(created_date, '%d-%m') AS date, COUNT(*) AS count
     FROM article
-    WHERE created_date >= CURDATE() - INTERVAL ? DAY
+    WHERE collected_date >= CURDATE() - INTERVAL ? DAY
     GROUP BY date
     ORDER BY date;
 `;

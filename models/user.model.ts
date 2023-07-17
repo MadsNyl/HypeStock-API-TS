@@ -6,7 +6,8 @@ import {
     create,
     allByRole,
     update,
-    updateRole
+    updateRole,
+    editPassword
 } from "../queries/user.query";
 import User from "../types/user";
 
@@ -39,9 +40,17 @@ export const updateUserRefreshToken = async (refreshToken: string, username: str
     }
 }
 
-export const updateUser = async (username: string, password: string) => {
+export const updateUser = async (oldUsername: string, username: string, firstName: string, lastName: string) => {
     try {
-        await connection.query(update, [password, username])
+        await connection.query(update, [username, firstName, lastName, oldUsername]);
+    } catch (e) {
+        console.error("Error updating a user:", e);
+    }
+}
+
+export const updatePassword = async (username: string, password: string) => {
+    try {
+        await connection.query(editPassword, [password, username]);
     } catch (e) {
         console.error("Error updating a user:", e);
     }

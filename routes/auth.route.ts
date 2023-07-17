@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    editPassword,
     editUser,
     handleLogin,
     handleLogout,
@@ -19,6 +20,7 @@ authRouter
     .post("/register", verifyJWT, verifyRoles(Role.Admin), handleNewUser)
     .post("/editor", verifyJWT, verifyRoles(Role.Admin), handleNewEditor)
     .put("/update", verifyJWT, verifyRoles(Role.Admin, Role.Editor, Role.User), editUser)
+    .put("/password", verifyJWT, verifyRoles(Role.Admin, Role.Editor, Role.User), editPassword)
     .get("/logout", handleLogout)
 
 

@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import { Request, Response } from "express";
 import {
@@ -6,7 +6,8 @@ import {
     updateUserRefreshToken,
     createUser,
     findUserByRefreshToken,
-    updateUser
+    updateUser,
+    updatePassword
 } from "../models/user.model";
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../settings";
 import Role from "../enums/role";
@@ -178,9 +179,55 @@ export const handleNewEditor = async (req: Request, res: Response) => {
 }
 
 export const editUser = async (req: Request, res: Response) => {
-    const { username, password, oldPassword } = req.body;
+    const { oldUsername, username, firstName, lastName } = req.body;
+    const { jwt } = req.cookies;
 
-    if (!username || !password || !oldPassword) {
+    if (!oldUsername || !username || !firstName || !lastName) {
+        return res
+            .status(400)
+            .send("There have to be a username, password and old password.");
+    }
+
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username.toString());
+
+    if (!isEmail) {
+        return res
+            .status(400)
+            .send("The email has to be an email.");
+    }
+
+    try {
+        const existingUsers = await findUserByUsername(oldUsername);
+        
+        if (!existingUsers.length) {
+            return res
+                .status(401)
+                .send("No existing user.");
+        }
+
+        if (existingUsers[0].refresh_token !== jwt) {
+            return res
+                .status(403)
+                .send("You do not have access to this user.");
+        }
+
+        await updateUser(oldUsername, username, firstName, lastName);
+
+        return res
+            .status(204)
+            .send("User updated.");
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send("There occured an error.");
+    }
+}
+
+export const editPassword = async (req: Request, res: Response) => {
+    const { oldPassword, newPassword, username } = req.body;
+    const { jwt } = req.cookies;
+
+    if (!oldPassword || !newPassword || !username) {
         return res
             .status(400)
             .send("There have to be a username, password and old password.");
@@ -191,8 +238,14 @@ export const editUser = async (req: Request, res: Response) => {
         
         if (!existingUsers.length) {
             return res
-                .send("No existing user.")
-                .status(401);
+                .status(401)
+                .send("No existing user.");
+        }
+
+        if (existingUsers[0].refresh_token !== jwt) {
+            return res
+                .status(403)
+                .send("You do not have access to this user.");
         }
 
         const existingPassword = existingUsers[0].password;
@@ -201,18 +254,17 @@ export const editUser = async (req: Request, res: Response) => {
         
         if (!userMatch) {
             return res
-                .send("Wrong password.")
-                .status(401);
+                .status(401)
+                .send("Wrong password.");
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        await updateUser(username, hashedPassword);
+        await updatePassword(username, hashedPassword);
 
         return res
             .status(204)
-            .send("User updated.");
-
+            .send("Password updated.");
     } catch (e) {
         console.log(e);
         return res.status(500).send("There occured an error.");

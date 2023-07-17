@@ -16,7 +16,7 @@ const verifyJWT = (req: UserRequest, res: Response, next: NextFunction) => {
     const token = authHeader.split(" ")[1];
 
     if (!ACCESS_TOKEN_SECRET) {
-        return res.send("There occured an error.").status(500);
+        return res.status(500).send("There occured an error.");
     }
 
     jsonwebtoken.verify(
