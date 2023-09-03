@@ -37,5 +37,6 @@ export const remove = `
 export const create = `
     INSERT
     INTO subreddit
-    (name, description, subscribers, url);
+    (name, url)
+    VALUES (?, ?);
 `;

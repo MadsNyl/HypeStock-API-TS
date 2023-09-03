@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import {
-    allSubreddits, subreddit, subredditCount
+    allSubreddits,
+    createSubreddit,
+    subreddit,
+    subredditCount
 } from "../../models/reddit/subreddit.reddit.model";
 import { commentCountBySubreddit } from "../../models/reddit/comment.reddit.model";
 import { submissionCountBysubreddit } from "../../models/reddit/submission.reddit.model";
@@ -76,6 +79,27 @@ export const getSubreddit = async (req: Request, res: Response) => {
                 "commentCount": commentCount
             })
 
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send("There occured an error.");
+    }
+}
+
+export const addSubreddit = async (req: Request, res: Response) => {
+    const { name, url } = req.body;
+
+    if (!name || !url) {
+        return res
+            .status(400)
+            .send("There have to be subreddit name and url.");
+    }
+
+    try {       
+        await createSubreddit(name.toString(), url.toString());
+
+        return res
+            .status(204)
+            .send("Subreddit created.");
     } catch (e) {
         console.log(e);
         return res.status(500).send("There occured an error.");

@@ -40,12 +40,21 @@ export const countBySubreddit = `
     WHERE subreddit = ?;
 `;
 
+export const countByTicker = `
+    SELECT COUNT(*) AS count
+    FROM reddit_ticker
+    INNER JOIN
+    reddit_comment ON
+    reddit_ticker.comment = reddit_comment.id
+    WHERE reddit_ticker.ticker = ?;
+`;
+
 export const countByEachSubreddit = `
     SELECT subreddit.name, COUNT(reddit_comment.id) AS count
     FROM subreddit
     INNER JOIN
-    reddit_count
+    reddit_comment
     ON subreddit.name = reddit_comment.subreddit
-    WHERE reddit_comment.collected_date >= DATE(NOW - INTERVAL ? DAY)
+    WHERE reddit_comment.collected_date >= DATE(NOW() - INTERVAL ? DAY)
     GROUP BY subreddit.name;
 `;

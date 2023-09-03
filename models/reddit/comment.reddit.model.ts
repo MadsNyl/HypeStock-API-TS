@@ -2,7 +2,8 @@ import connection from "../../connection";
 import {
     count,
     countByEachSubreddit,
-    countBySubreddit
+    countBySubreddit,
+    countByTicker
 } from "../../queries/reddit/comment.reddit.query";
 import Count from "../../types/count";
 import CountName from "../../types/countName";
@@ -21,6 +22,16 @@ export const commentCountBySubreddit = async (name: string): Promise<Count[]> =>
 export const commentCount = async (): Promise<Count[]> => {
     try {
         const [rows] = await connection.query(count);
+        return rows as Count[];
+    } catch (e) {
+        console.error("Error retrieving comment count:", e);
+        return [];
+    }
+}
+
+export const commentCountByTicker = async (symbol: string): Promise<Count[]> => {
+    try {
+        const [rows] = await connection.query(countByTicker, [symbol]);
         return rows as Count[];
     } catch (e) {
         console.error("Error retrieving comment count:", e);

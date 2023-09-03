@@ -51,7 +51,7 @@ const tickersByName = async (name: string): Promise<Ticker[]> => {
 
 const tickersBySearch = async (search: string, limit: number): Promise<Ticker[]> => {
     try {
-        const [rows] = await connection.query(bySearch, [search, limit]);
+        const [rows] = await connection.query(bySearch, [search, search, limit]);
         return rows as Ticker[];
     } catch (e) {
         console.error("Error retrieving tickers by search:", e);

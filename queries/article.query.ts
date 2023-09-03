@@ -54,6 +54,12 @@ export const countByProvidersAndDays = `
     ORDER BY count DESC;
 `;
 
+export const countByTicker = `
+    SELECT COUNT(*) AS count
+    FROM article_ticker
+    WHERE symbol = ?;
+`;
+
 export const countByTickers = `
     SELECT symbol, COUNT(*) as count
     FROM article_ticker

@@ -12,8 +12,8 @@ export const getStats = async (req: Request, res: Response) => {
     }
 
     try {
-        const commentCountPerSubreddit = commentCountByEachSubreddit(Number(days));
-        const totalCommentCount = commentCount();
+        const commentCountPerSubreddit = await commentCountByEachSubreddit(Number(days));
+        const totalCommentCount = await commentCount();
 
         return res
             .status(200)

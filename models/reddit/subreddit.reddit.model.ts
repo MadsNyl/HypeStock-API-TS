@@ -65,12 +65,10 @@ export const deleteSubreddit = async (name: string) => {
 
 export const createSubreddit = async (
     name: string,
-    description: string,
-    subscribers: number,
     url: string
 ) => {
     try {
-        await connection.query(create, [name, description, subscribers, url]);
+        await connection.query(create, [name, url]);
     } catch (e) {
         console.error("Error creating subreddit:", e);
     }

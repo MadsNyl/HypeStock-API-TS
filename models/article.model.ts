@@ -18,7 +18,8 @@ import {
     countByDays,
     countEachHour,
     countEachDay,
-    countEachHourByProvider
+    countEachHourByProvider,
+    countByTicker
 } from "../queries/article.query";
 
 
@@ -152,12 +153,22 @@ export const articlesCountEachHourByProvider = async (provider: string): Promise
     }
 }
 
-export const articlesCountEachDay =async (days: number): Promise<CountDate[]> => {
+export const articlesCountEachDay = async (days: number): Promise<CountDate[]> => {
     try {
         const [rows] = await connection.query(countEachDay, [days]);
         return rows as CountDate[];
     } catch (e) {
         console.error("Error retrieving article count for each day:", e);
+        return [];
+    }
+}
+
+export const articlesCountByTicker = async (symbol: string): Promise<Count[]> => {
+    try {
+        const [rows] = await connection.query(countByTicker, [symbol]);
+        return rows as Count[];
+    } catch (e) {
+        console.error("Error retrieving article count for by ticker:", e);
         return [];
     }
 }

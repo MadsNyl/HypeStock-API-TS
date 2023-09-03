@@ -1,7 +1,8 @@
 import { Request, Response } from "express"
 import { allTickers, tickerBySymbol, tickerBySymbolSearch, tickersByName, tickersBySearch } from "../models/ticker.model";
 import { trackingsByTickerAndDays } from "../models/tracking.model";
-import { articlesByTickerAndDays, articlesCountByProvidersAndDays, articlesCountByTickerAndDays } from "../models/article.model";
+import { articlesByTickerAndDays, articlesCountByProvidersAndDays, articlesCountByTicker, articlesCountByTickerAndDays } from "../models/article.model";
+import { commentCountByTicker } from "../models/reddit/comment.reddit.model";
 
 const getAllTickers = async (_req: Request, res: Response)  => {
     try {
@@ -61,9 +62,9 @@ const getTickersBySymbolOrName = async (req: Request, res: Response) => {
 }
 
 const getTicker = async (req: Request, res: Response) => {
-    const { symbol, days, article_limit } = req.query;
+    const { symbol, days, limit } = req.query;
 
-    if (!symbol || !days || !article_limit) {
+    if (!symbol || !days || !limit) {
         return res  
             .send("There have to be a ticker symbol, limit of days and limit of articles.")
             .status(400);
@@ -71,20 +72,31 @@ const getTicker = async (req: Request, res: Response) => {
 
     try {
         const result = await tickerBySymbol(symbol.toString());
+
+        if (!result.length) {
+            return res
+                .status(404)
+                .send("There is no match for this ticker.");
+        }
+
         const priceTrackings = await trackingsByTickerAndDays(symbol.toString(), Number(days));
         const articleTrackings = await articlesCountByTickerAndDays(symbol.toString(), Number(days));
         const providers = await articlesCountByProvidersAndDays(symbol.toString(), Number(days));
-        const articles = await articlesByTickerAndDays(symbol.toString(), Number(days), Number(article_limit));
+        const articles = await articlesByTickerAndDays(symbol.toString(), Number(days), Number(limit));
+        const totalRedditComments = await commentCountByTicker(symbol.toString());
+        const totalArticleCount = await articlesCountByTicker(symbol.toString());
 
         return res
             .send({
-                "ticker": result,
+                "ticker": result[0],
                 "tracking": {
                     "prices": priceTrackings,
                     "articles": articleTrackings
                 },
                 "providers": providers,
-                "articles": articles
+                "articles": articles,
+                "redditCommentsCount": totalRedditComments,
+                "articlesCount": totalArticleCount
             })
             .status(200);
 
@@ -99,21 +111,21 @@ const getTickersBySearch = async (req: Request, res: Response) => {
 
     if (!search || !limit) {
         return res  
-            .send("There have to be a search for a ticker name or symbol and a limit.")
-            .status(400);
+            .status(400)
+            .send("There have to be a search for a ticker name or symbol and a limit.");
     }
 
     try {
         const results = await tickersBySearch(search.toString(), Number(limit));
 
         return res
+            .status(200)
             .send({
                 "tickers": results
-            })
-            .status(200);
+            });
     } catch (e) {
         console.log(e);
-        return res.send("There occured an error.").status(500);
+        return res.status(500).send("There occured an error.");
     }
 }
 
