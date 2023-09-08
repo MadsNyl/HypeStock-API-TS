@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
-import { allTickers, tickerBySymbol, tickerBySymbolSearch, tickersByName, tickersBySearch } from "../models/ticker.model";
+import { allTickers, popularTickers, tickerBySymbol, tickerBySymbolSearch, tickersByName, tickersBySearch } from "../models/ticker.model";
 import { trackingsByTickerAndDays } from "../models/tracking.model";
 import { articlesByTickerAndDays, articlesCountByProvidersAndDays, articlesCountByTicker, articlesCountByTickerAndDays } from "../models/article.model";
 import { commentCountByTicker } from "../models/reddit/comment.reddit.model";
 
-const getAllTickers = async (_req: Request, res: Response)  => {
+export const getAllTickers = async (_req: Request, res: Response)  => {
     try {
         const tickers = await allTickers();
 
@@ -15,11 +15,35 @@ const getAllTickers = async (_req: Request, res: Response)  => {
             .status(200);
     } catch (e) {
         console.log(e);
-        return res.send("There occured an error.").status(500);
+        return res.status(500).send("There occured an error.");
     }
 }
 
-const getTickersBySymbolOrName = async (req: Request, res: Response) => {
+export const getPopularTickers = async (req: Request, res: Response) => {
+    const { limit } = req.query;
+
+    if (!limit) {
+        return res
+            .status(400)
+            .send("There has to be a limit.");
+    }
+
+    try {
+        const tickers = await popularTickers(Number(limit));
+
+        return res
+            .status(200)
+            .send({
+                "tickers": tickers
+            });
+
+        } catch (e) {
+        console.log(e);
+        return res.status(500).send("There occured an error.");
+    }
+}
+
+export const getTickersBySymbolOrName = async (req: Request, res: Response) => {
     const { symbol, name } = req.query;
 
     if (!symbol && !name) {
@@ -61,7 +85,7 @@ const getTickersBySymbolOrName = async (req: Request, res: Response) => {
     }
 }
 
-const getTicker = async (req: Request, res: Response) => {
+export const getTicker = async (req: Request, res: Response) => {
     const { symbol, days, limit } = req.query;
 
     if (!symbol || !days || !limit) {
@@ -106,7 +130,7 @@ const getTicker = async (req: Request, res: Response) => {
     }
 }
 
-const getTickersBySearch = async (req: Request, res: Response) => {
+export const getTickersBySearch = async (req: Request, res: Response) => {
     const { search, limit } = req.query;
 
     if (!search || !limit) {
@@ -150,12 +174,4 @@ export const getTickersBySymbolSearch = async (req: Request, res: Response) => {
         console.log(e);
         return res.send("There occured an error.").status(500);
     }
-}
-
-
-export {
-    getAllTickers,
-    getTickersBySymbolOrName,
-    getTicker,
-    getTickersBySearch
 }

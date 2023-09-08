@@ -5,6 +5,18 @@ export const all = `
     FROM ticker;
 `;
 
+export const popular = `
+    SELECT COUNT(article_ticker.symbol) AS count, ticker.* FROM ticker
+    INNER JOIN
+    article_ticker ON ticker.symbol = article_ticker.symbol
+    INNER JOIN
+    article on article_ticker.article_id = article.id
+    WHERE article.collected_date >= DATE(NOW() - INTERVAL 7 DAY)
+    GROUP BY ticker.symbol
+    ORDER BY count DESC
+    LIMIT ?;
+`;
+
 export const bySymbol = `
     SELECT *
     FROM ticker
